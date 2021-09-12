@@ -1,0 +1,17 @@
+.list-group {
+    margin-bottom: 15px;
+    padding: 0 5%;
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background-color: transparent;
+  line-height: 54px;
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background-color: $color-primary-white;
+}

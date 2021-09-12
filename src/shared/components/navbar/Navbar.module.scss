@@ -1,0 +1,21 @@
+@import '../../../assets/scss/variables.scss';
+
+.nav-wrapper {
+  background-color: $color-bg-dark;
+}
+
+.logo {
+  font-size: 32px;
+
+  &:hover,
+  &:focus {
+    color: $color-primary-white;
+  }
+}
+
+.logout {
+  &:hover,
+  &:focus {
+    color: $color-primary-white;
+  }
+}

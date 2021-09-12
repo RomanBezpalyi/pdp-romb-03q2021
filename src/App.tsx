@@ -1,22 +1,54 @@
-import React from 'react'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Switch, Route, Redirect } from 'react-router-dom'
 
-import { Navbar } from './shared/components/Navbar'
-import { About } from './pages/About'
-import { Home } from './pages/Home'
+import { ProtectedComponent } from './shared/hoc'
+import { Navbar, Sidebar } from './shared/components'
+import { Home, Labels, Auth, NotFoundPage } from './pages'
 
-const App: React.FC = () => {
+import { AuthContext, ListContext } from './store'
+
+import './index.scss'
+
+export const App: React.FC = () => {
+  const { isLoggedIn, login } = useContext(AuthContext)
+  const { lists } = useContext(ListContext)
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      let userData: {
+        email: string
+        idToken: string
+      }
+      try {
+        userData = JSON.parse(localStorage.getItem('userData') as string)
+        if (userData) {
+          login(userData.idToken)
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
-      <Switch>
-        <div className="container">
-          <Route path="/" component={Home} exact />
-          <Route path="/about" component={About} />
-        </div>
-      </Switch>
-    </BrowserRouter>
+      <div className="body-container">
+        {isLoggedIn && <Sidebar />}
+        <main>
+          <Switch>
+            <Route exact path="/auth" component={Auth} />
+            {lists && lists.length && (
+              <Redirect exact from="/" to={`/${lists[0].id}`} />
+            )}
+            <ProtectedComponent exact path="/labels" component={Labels} />
+            <ProtectedComponent path="/:id" component={Home} exact />
+            <Route path="*" component={NotFoundPage} />
+          </Switch>
+        </main>
+      </div>
+    </>
   )
 }
-
-export default App
